@@ -1,8 +1,21 @@
-doctype
-html
-  head
-    meta(charset="utf-8")
-    title #{title}
-  body
-    h1 #{title}
-    h2 #{title}
+extends ../layout
+
+block content
+  .container
+    .row
+      .col-md-7
+        embed(src="#{movie.flash}", allowfullscreen="true", quality="high", width=720, height=600, align="middle", type="application/x-shockwave-flash")
+      .col-md-5
+        dl.dl-horizontal
+          dt movie name
+          dd= movie.title
+          dt movie doctor
+          dd= movie.doctor
+          dt country
+          dd= movie.country
+          dt language
+          dd= movie.language
+          dt year
+          dd= movie.year
+          dt summary
+          dd= movie.summary

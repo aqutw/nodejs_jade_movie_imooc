@@ -1,7 +1,28 @@
-doctype
-html
-  head
-    meta(charset="utf-8")
-    title #{title}
-  body
-    h1 #{title}
+extends ../layout
+
+block content
+  .container
+    .row
+      table.table.table-hover.table-bordered
+        thead
+          tr
+            th moviename
+            th doctor
+            th country
+            th year
+            th createtime
+            th view
+            th update
+            th delete
+        tbody
+          each v in movies
+          tr(class="item-id=#{v._id}")
+            td #{v.title}
+            td #{v.doctor}
+            td #{v.country}
+            td #{v.year}
+            td #{moment(v.meta.createdAt).format('MM/DD/YYYY')}
+            td: a(href="/movie/#{item._id}") view
+            td: a(href="/admin/update/#{item._id}") modify
+            td
+              button.btn.btn-danger.del(type="button", data-id="#{v._id}") delete
