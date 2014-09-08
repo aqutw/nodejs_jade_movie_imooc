@@ -16,13 +16,13 @@ block content
             th delete
         tbody
           each v in movies
-          tr(class="item-id=#{v._id}")
-            td #{v.title}
-            td #{v.doctor}
-            td #{v.country}
-            td #{v.year}
-            td #{moment(v.meta.createdAt).format('MM/DD/YYYY')}
-            td: a(href="/movie/#{item._id}") view
-            td: a(href="/admin/update/#{item._id}") modify
-            td
-              button.btn.btn-danger.del(type="button", data-id="#{v._id}") delete
+            tr(class="item-id=#{v._id}")
+              td #{v.title}
+              td #{v.doctor}
+              td #{v.country}
+              td #{v.year}
+              td #{moment(v.meta.createdAt).format('MM/DD/YYYY')}
+              td: a(href="/movie/#{item._id}") view
+              td: a(href="/admin/update/#{item._id}") modify
+              td
+                button.btn.btn-danger.del(type="button", data-id="#{v._id}") delete
