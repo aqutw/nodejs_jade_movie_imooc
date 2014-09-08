@@ -18,7 +18,7 @@ app.get('/', function(req, res){
 app.get('/movie/:id', function(req, res){
 	res.render('detail', {title: 'dtail here'})
 })
-app.get('/amdin/movie', function(req, res){
+app.get('/admin/movie', function(req, res){
 	res.render('admin', {title: 'admin here'})
 })
 app.get('/admin/list', function(req, res){
