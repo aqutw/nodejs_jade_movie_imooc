@@ -1,41 +1,28 @@
 var express = require('express')
+var print_r = require('print_r').print_r
+var mongoose = require('mongoose')
+var Movie = require('./models/movie')
 var path = require('path')
+var _ = require('underscore')
 var bodyParser = require('body-parser')
 var port = process.env.PORT || 3000
 var app = express()
+
+function log(o){console.log(o);}
+
+mongoose.connect('mongodb://localhost/imooc')
 
 app.set('views', './views/pages')
 app.set('view engine', 'jade')
 app.use(bodyParser.urlencoded())
 app.use(express.static(path.join(__dirname, 'bower_components')))
+app.locals.moment = require('moment')
 app.listen(port)
 
 console.log('express start on port '+port)
 
-app.get('/',function(req,res){
-	Movie.fetch(function(err,movies){
-		if(err){
-			console.log(err)
-		}
-		res.render('index',{
-			title:'影院热度播报',
-			movies:movies
-		})
-	})
-})
-
-app.get('/movie/:id',function(req,res){
-	var id = req.params.id
-
-	Movie.findById(id,function(err,movie){
-		res.render('detail',{
-				title:movie.title,
-				movie:movie
-		})
-	})
-})
-
 app.get('/admin/movie',function(req,res){
+console.log('addddddddddddmin/movie')
 	res.render('admin',{
 		title:'imooc 后台录入页面',
 		movie:{
@@ -51,17 +38,91 @@ app.get('/admin/movie',function(req,res){
 	})
 })
 
-app.get('/admin/update/:id',function(req,res){
-	var id = req.params.id
 
-	if(id){
-		Movie.findById(id,function(err,movie){
-			res.render('admin',{
-				title:'imooc 后台更新页面',
-				movie:movie
-			})
-		})
-	}
+
+
+app.get('/',function(req,res){
+  Movie.fetch(function(err, movies){//TODO: DRY2
+    if(err){
+      console.log(err)
+    }
+
+    res.render('index', { title: 'imooc Homepage', movies:movies })
+  })
+
+})
+
+app.get('/movie/:id',function(req,res){
+  var id=req.params.id
+  Movie.findById(id, function(err, movie){
+    if(err){ console.log(err) }
+    res.render('detail', {title:'imooc '+movie.title, movie:movie});
+  })
+})
+
+//admin update movie
+app.get('/admin/update/:id', function(req, res){
+  var id=req.params.id
+  if(id){
+    Movie.findById(id, function(err, movie){
+      res.render('admin',{ title:'imooc adminUpdatePage', movie:movie})
+    })
+  }
+})
+
+app.get('/test/movie_save2', function(req,res){
+  var o = new Movie({doctor:'kkkk'}) 
+  o.save()
+  res.render('debug')
+})
+
+app.get('/test/movie_save', function(req,res){
+ var var1=print_r({k1:'k1v',k2:'k2v'})
+ var o = Movie.findById({_id: mongoose.Types.ObjectId('540d77482c87e7b9485c925c')})
+ log(o)
+ log(o.emitted.err)
+ res.render('debug', {var1:var1})
+})
+
+//admin post movie
+app.post('/admin/movie/new', function(req,res){
+//console.log('--------------req------------')
+//console.log(req)
+  var id = req.body.movie._id //<---why pass (string)'undefined' to me T-T
+  var o = req.body.movie //<--notice; req.body & o is produced from <input name="movie[*]" which HAD posted
+  log('---------o--------')
+  log(o)
+  log('==========')
+  var _movie
+
+  if(id!=='undefined'){
+    Movie.findById(id, function(err, movie){
+      if(err){ console.log(err) }
+
+      _movie = _.extend(movie, o) //<--notice: get old movie from DB, then assign newest value to it
+      log('------------')
+      log(_movie)
+      log('=========')
+      _movie.save(function(err, movie){//<--TODO:refactor to DRY
+        if(err){ console.log(err) }
+        res.redirect('/movie/' + movie._id)
+      })
+    })
+  }else{
+    _movie = new Movie({//<--TODO: refactor to quick assignment
+      doctor: o.doctor, title: o.title,
+      country: o.country, language: o.language,
+      year: o.year, poster: o.poster,
+      summary: o.summary, flash: o.flash
+    })
+
+      _movie.save(function(err, movie){//<--TODO:refactor to DRY
+        if(err){ console.log(err) }
+        res.redirect('/movie/' + movie._id)
+      })
+
+
+  }
 })
 
 // admin post movie
@@ -110,13 +171,11 @@ app.post('/admin/movie/new',function(req,res){
 })
 
 app.get('/admin/list',function(req,res){
-	Movie.fetch(function(err,movies){
-		if(err){
-			console.log(err)
-		}
-		res.render('list',{
-			title:'imooc 列表页',
-			movies:movies
-		})
-	})
+  Movie.fetch(function(err, movies){//TODO:DRY2
+    if(err){
+      console.log(err)
+    }
+
+    res.render('list', { title: 'imooc Homepage', movies:movies })
+  })
 })

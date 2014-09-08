@@ -6,7 +6,7 @@ block content
 			form.form-horizotal(method="post",action="/admin/movie/new")
 				input(type="hidden",name="movie[_id]",value="#{movie._id}")
 				.form-group
-					lable.col-sm-2.control-lable(for="inputTitle") 电影名字
+					lable.col-sm-2.control-lable(for="inputTitle") 电影名字99
 					.col-sm-10
 						input#inputTitle.form-control(type="text",name="movie[title]",value="#{movie.title}")
 				.form-group
@@ -36,7 +36,7 @@ block content
 				.form-group
 					lable.col-sm-2.control-lable(for="inputSummary") 电影简介
 					.col-sm-10
-						input#inputSummary.form-control(type="text",name="movie[summary]",value="#{movie.summary}")
+						textarea#inputSummary.form-control(name="movie[summary]") #{movie.summary}
 				.form-group
 					.col-sm-offset-2.col-sm-10
 					button.btn.btn-default(type="submit") 录入
