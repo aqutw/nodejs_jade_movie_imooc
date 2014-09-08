@@ -8,7 +8,11 @@ var bodyParser = require('body-parser')
 var port = process.env.PORT || 3000
 var app = express()
 
-function log(o){console.log(o);}
+function log(o,title){
+log('-------'+(title||'')+'--------')
+console.log(o)
+log('==========')
+}
 
 mongoose.connect('mongodb://localhost/imooc')
 
@@ -90,9 +94,7 @@ app.post('/admin/movie/new', function(req,res){
 //console.log(req)
   var id = req.body.movie._id //<---why pass (string)'undefined' to me T-T
   var o = req.body.movie //<--notice; req.body & o is produced from <input name="movie[*]" which HAD posted
-  log('---------o--------')
   log(o)
-  log('==========')
   var _movie
 
   if(id!=='undefined'){
@@ -100,26 +102,27 @@ app.post('/admin/movie/new', function(req,res){
       if(err){ console.log(err) }
 
       _movie = _.extend(movie, o) //<--notice: get old movie from DB, then assign newest value to it
-      log('------------')
       log(_movie)
-      log('=========')
       _movie.save(function(err, movie){//<--TODO:refactor to DRY
         if(err){ console.log(err) }
         res.redirect('/movie/' + movie._id)
       })
     })
   }else{
-    _movie = new Movie({//<--TODO: refactor to quick assignment
+  /*  _movie = new Movie({//<--TODO: refactor to quick assignment
       doctor: o.doctor, title: o.title,
       country: o.country, language: o.language,
       year: o.year, poster: o.poster,
       summary: o.summary, flash: o.flash
     })
+    log(_movie, '_movie')
 
       _movie.save(function(err, movie){//<--TODO:refactor to DRY
+        log(movie, 'movie')
         if(err){ console.log(err) }
+*/
         res.redirect('/movie/' + movie._id)
-      })
+ //     })
 
 
   }
@@ -178,4 +181,18 @@ app.get('/admin/list',function(req,res){
 
     res.render('list', { title: 'imooc Homepage', movies:movies })
   })
+})
+
+
+app.delete('/admin/list',function(req,res){
+  var id=req.query.id //<-- ?id=xxxxx
+  if(id){ Movie.remove({_id:id}, function(err, movie){
+    Movie.remove({_id:id}, function(err, movie){
+      if(err){log(err)}
+      else{
+        res.json({success:1})
+      }
+    })
+  })
+  }
 })
