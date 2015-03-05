@@ -74,17 +74,14 @@ app.get('/admin/update/:id', function(req, res){
   }
 })
 
-app.get('/test/movie_save2', function(req,res){
+app.get('/tool/movie_save2', function(req,res){
   var o = new Movie({doctor:'kkkk'}) 
   o.save()
   res.render('debug')
 })
 
-app.get('/test/movie_save', function(req,res){
- var var1=print_r({k1:'k1v',k2:'k2v'})
- var o = Movie.findById({_id: mongoose.Types.ObjectId('540d77482c87e7b9485c925c')})
- log(o)
- log(o.emitted.err)
+app.get('/tool/movie_save', function(req,res){
+ var var1=print_r({k1:'k1v',k2:'k2v', k3:'k3v'})
  res.render('debug', {var1:var1})
 })
 
@@ -109,7 +106,7 @@ app.post('/admin/movie/new', function(req,res){
       })
     })
   }else{
-  /*  _movie = new Movie({//<--TODO: refactor to quick assignment
+    _movie = new Movie({//<--TODO: refactor to quick assignment
       doctor: o.doctor, title: o.title,
       country: o.country, language: o.language,
       year: o.year, poster: o.poster,
@@ -120,9 +117,9 @@ app.post('/admin/movie/new', function(req,res){
       _movie.save(function(err, movie){//<--TODO:refactor to DRY
         log(movie, 'movie')
         if(err){ console.log(err) }
-*/
+
         res.redirect('/movie/' + movie._id)
- //     })
+      })
 
 
   }
